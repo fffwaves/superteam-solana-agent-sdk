@@ -34,13 +34,13 @@
 ## Phase 2: Core SDK (Days 3-6)
 
 ### 4. Transaction Parser Module
-- [ ] 4.1 Setup TypeScript project structure + Anchor.js dependencies
-- [ ] 4.2 Build transaction fetcher (query Solana RPC, cache transactions)
-- [ ] 4.3 Build instruction parser (decode Anchor IDLs, parse custom programs)
-- [ ] 4.4 Parse SPL token transfers (source, dest, amount, decimals)
-- [ ] 4.5 Parse Jupiter swaps (input token, output token, price, slippage)
-- [ ] 4.6 Parse Marinade stakes (SOL → mSOL, APY)
-- [ ] 4.7 Parse Orca liquidity operations (add/remove liquidity, LP tokens)
+- [x] 4.1 Setup TypeScript project structure + Anchor.js dependencies
+- [x] 4.2 Build transaction fetcher (query Solana RPC, cache transactions)
+- [x] 4.3 Build instruction parser (decode Anchor IDLs, parse custom programs)
+- [x] 4.4 Parse SPL token transfers (source, dest, amount, decimals)
+- [x] 4.5 Parse Jupiter swaps (input token, output token, price, slippage)
+- [x] 4.6 Parse Marinade stakes (SOL → mSOL, APY)
+- [x] 4.7 Parse Orca liquidity operations (add/remove liquidity, LP tokens)
 - [ ] 4.8 Generate human-readable summaries (natural language output)
 - [ ] 4.9 Test parser against 100+ real transactions
 
