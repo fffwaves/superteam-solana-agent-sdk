@@ -41,8 +41,8 @@
 - [x] 4.5 Parse Jupiter swaps (input token, output token, price, slippage)
 - [x] 4.6 Parse Marinade stakes (SOL → mSOL, APY)
 - [x] 4.7 Parse Orca liquidity operations (add/remove liquidity, LP tokens)
-- [ ] 4.8 Generate human-readable summaries (natural language output)
-- [ ] 4.9 Test parser against 100+ real transactions
+- [x] 4.8 Generate human-readable summaries (natural language output)
+- [x] 4.9 Test parser against 100+ real transactions
 
 ### 5. Risk Detector Module
 - [ ] 5.1 Build token metadata fetcher (supply, holder distribution, mint authority)
