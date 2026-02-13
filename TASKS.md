@@ -45,8 +45,8 @@
 - [x] 4.9 Test parser against 100+ real transactions
 
 ### 5. Risk Detector Module
-- [ ] 5.1 Build token metadata fetcher (supply, holder distribution, mint authority)
-- [ ] 5.2 Detect rug pulls (concentrated holders, disabled mint authority, zero liquidity)
+- [x] 5.1 Build token metadata fetcher (supply, holder distribution, mint authority)
+- [x] 5.2 Detect rug pulls (concentrated holders, disabled mint authority, zero liquidity)
 - [ ] 5.3 Detect suspicious patterns (rapid token transfers, unusual account behavior)
 - [ ] 5.4 Assess MEV exposure (check for Jito bundles, frontrunning signs)
 - [ ] 5.5 Assess portfolio risk (concentration analysis, token stability scoring)
