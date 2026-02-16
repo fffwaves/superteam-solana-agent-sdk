@@ -1,0 +1,62 @@
+{
+  "project": "superteam",
+  "runId": "run-1771087843623",
+  "startedAt": "2026-02-14T16:50:43.624Z",
+  "updatedAt": "2026-02-14T23:49:44.685Z",
+  "status": "running",
+  "stats": {
+    "total": 3,
+    "completed": 0,
+    "inProgress": 1,
+    "blocked": 0,
+    "failed": 0,
+    "queued": 2
+  },
+  "tasks": [
+    {
+      "id": "5.3",
+      "feature": "risk-detector",
+      "name": "Implement pattern detection for rapid token transfers",
+      "tier": 1,
+      "stage": "implementing",
+      "status": "in_progress",
+      "dependencies": [],
+      "startedAt": "2026-02-14T16:50:43.734Z",
+      "updatedAt": "2026-02-14T23:49:44.685Z",
+      "retries": 1,
+      "error": "Unknown error",
+      "deployUrl": null,
+      "agents": []
+    },
+    {
+      "id": "5.4",
+      "feature": "risk-detector",
+      "name": "Assessing MEV exposure signs",
+      "tier": 1,
+      "stage": "queued",
+      "status": "queued",
+      "dependencies": [],
+      "startedAt": "2026-02-14T20:49:39.597Z",
+      "updatedAt": "2026-02-14T20:49:39.597Z",
+      "retries": 0,
+      "error": null,
+      "deployUrl": null,
+      "agents": []
+    },
+    {
+      "id": "5.5",
+      "feature": "risk-detector",
+      "name": "Portfolio concentration analysis",
+      "tier": 1,
+      "stage": "queued",
+      "status": "queued",
+      "dependencies": [],
+      "startedAt": "2026-02-14T21:49:55.295Z",
+      "updatedAt": "2026-02-14T21:49:55.295Z",
+      "retries": 0,
+      "error": null,
+      "deployUrl": null,
+      "agents": []
+    }
+  ]
+}
