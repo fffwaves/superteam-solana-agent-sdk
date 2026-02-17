@@ -1,5 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
+export type SolanaTransaction = ParsedTransaction;
+
 /**
  * Parsed transaction result
  */

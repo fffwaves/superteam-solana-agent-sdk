@@ -29,10 +29,15 @@ export class TransactionSimulator {
     signers?: any[]
   ): Promise<SimulationResult> {
     try {
-      const simulationResult = await this.connection.simulateTransaction(
-        transaction as VersionedTransaction,
-        signers
-      );
+      let simulationResult;
+      
+      if ('version' in transaction) {
+        // VersionedTransaction
+        simulationResult = await this.connection.simulateTransaction(transaction as VersionedTransaction);
+      } else {
+        // Regular Transaction
+        simulationResult = await this.connection.simulateTransaction(transaction as Transaction, signers);
+      }
 
       const logs = simulationResult.value.logs || [];
       const err = simulationResult.value.err;

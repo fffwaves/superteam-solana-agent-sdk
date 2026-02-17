@@ -16,11 +16,11 @@ export function detectSuspiciousPatterns(
   const patterns: SuspiciousPattern[] = [];
 
   // Sort by time
-  const sorted = [...transactions].sort((a, b) => a.blockTime - b.blockTime);
+  const sorted = [...transactions].sort((a, b) => (a.blockTime || 0) - (b.blockTime || 0));
 
   // 1. Detect rapid transfers (spamming)
-  if (sorted.length >= 5) {
-    const timeSpan = sorted[sorted.length - 1].blockTime - sorted[0].blockTime;
+  if (sorted.length >= 5 && sorted[0].blockTime && sorted[sorted.length - 1].blockTime) {
+    const timeSpan = sorted[sorted.length - 1].blockTime! - sorted[0].blockTime!;
     const frequency = sorted.length / (timeSpan / 60); // tx per minute
     
     if (frequency > 20) {

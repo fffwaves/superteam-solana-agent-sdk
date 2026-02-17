@@ -17,5 +17,8 @@ export class InstructionParser {
     }
 
     const programId = instruction.programId.toBase58();
-    // ... rest of basic logic
+    return `Unknown instruction from program ${programId}`;
+  }
+}
+
 
