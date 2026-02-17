@@ -7,6 +7,7 @@ export * from './risk/mev-detector';
 export * from './risk/portfolio-risk';
 export * from './risk/token-metadata';
 export * from './risk/pattern-detector';
+export * from './risk/confidence-scorer';
 
 // Export core functionality
 export * from './fetcher';

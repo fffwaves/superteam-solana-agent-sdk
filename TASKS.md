@@ -3,7 +3,7 @@
 ## In Progress
 - [ ] 5.4 Assess MEV exposure (check for Jito bundles, frontrunning signs)
 - [ ] 5.5 Assess portfolio risk (concentration analysis, token stability scoring)
-- [ ] 5.6 Confidence scoring (how sure are we this is a rug?)
+- [x] 5.6 Confidence scoring (how sure are we this is a rug?)
 - [ ] 6.1 Build Jupiter swap executor (quote → simulate → execute)
 - [ ] 6.2 Build Marinade stake executor (quote → simulate → execute)
 - [ ] 6.3 Build SPL transfer executor (validation → simulate → execute)
