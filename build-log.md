@@ -618,3 +618,95 @@ Next entry: Phase 2 Kick-off (Core SDK Implementation)
 ## Energy Level: 95% Confident, Ready to Build Core SDK
 
 Next entry: Phase 2 Kick-off (Core SDK Implementation)
+
+---
+
+## 2026-02-17 — Autonomous Session (18:00 UTC)
+
+**Task completed:** 5.6 — Unified Confidence Scoring System
+
+### What was built
+
+`packages/core/src/risk/confidence-scorer.ts` — a `ConfidenceScorer` that aggregates signals from all four risk analyzers into a single `ConfidenceScore` object:
+
+- **safetyScore** (0-100): how safe it is to proceed
+- **assessmentConfidence** (0-1): how much signal we had to work with
+- **recommendation**: `proceed | caution | block | insufficient_data`
+- **components**: per-analyzer breakdown for transparency
+
+**Weighting:** rugPull 45% · portfolio 25% · MEV 20% · patterns 10%
+
+**Bridge function:** `confidenceScoreToAnalysisResult()` converts to `AnalysisResult` format for direct use in `DecisionEngine`.
+
+### Tests
+21/21 unit tests passing (pure logic, no network calls). Scenarios covered:
+- Empty input → `insufficient_data`
+- Critical rug (score 95) → `block` (safety 5/100)
+- Clean signals + Jito → `proceed` (safety 90.8/100)
+- High MEV + medium rug → `block` (safety 46.2/100)
+- Concentrated risky portfolio + wash trading → `block`
+- Low-confidence single input → `insufficient_data`
+- DecisionEngine output format validation
+
+### Commit
+`049b1d7` — pushed to origin/master
+
+
+## 2026-02-17 — Autonomous Session (23:00 UTC)
+
+**Task:** Audit project state, update TASKS.md, start Portfolio Tracker Agent
+
+### Assessment
+
+Reviewed all Phase 2 task completions. Found TASKS.md was significantly out of date — tasks 5.4 through 8.1 were all implemented in prior sessions but not marked done. Updated TASKS.md to accurately reflect 24/24 core SDK tasks complete.
+
+**What's done (core SDK):**
+- All Phase 1 (research + design)
+- All Phase 2 (parser, risk, executor, decision framework)
+- Unified SDK class (`SolanaAgentSDK`) 
+- Full TypeScript compilation: clean (0 errors)
+
+**What remains (Phase 3 — Reference Agents + Dashboard):**
+- Portfolio Tracker Agent 🚧 (building now)
+- Yield Scout Agent
+- Risk Monitor Agent
+- Dashboard (Next.js)
+- Documentation
+
+### Work in progress
+
+Spawned Portfolio Tracker Agent build:
+- `packages/agents/portfolio-tracker/`
+- Demonstrates agent-style reasoning loop
+- Uses all core SDK modules (parser, risk, executor, decision engine)
+- Autonomous monitoring with configurable alerts
+
+## Entry 3: Portfolio Tracker Reference Agent (Feb 17, 2026)
+
+### Context
+Built the first Tier 1 reference agent: `PortfolioTrackerAgent`. This serves as the primary demonstration of how the SDK's modular components work together in a real-world autonomous scenario.
+
+### Implementation Details
+Created `packages/agents/portfolio-tracker/` with the following:
+- **`PortfolioTrackerAgent` class**: The main orchestrator that uses `SolanaAgentSDK`.
+- **State Reconstruction**: Replays transaction history to build a current view of holdings (since agents often need to understand the "why" and "how" of current balances).
+- **Risk Integration**: Directly calls `assessPortfolioRisk` from core to evaluate every token in the portfolio.
+- **Alert System**: Generates structured alerts for rug risks, concentration issues, and stability concerns.
+- **Autonomous Monitor**: A `PortfolioMonitor` class that implements a recurring analysis loop with callbacks.
+
+### Reasoning Logic
+The agent demonstrates "agent reasoning" by:
+1.  **Logging every step**: Clear logs explaining context gathering, state reconciliation, and risk synthesis.
+2.  **Synthesis**: It doesn't just report numbers; it combines P&L with risk scores to recommend actions (e.g., "URGENT: Address high-risk rug pull threats").
+3.  **Mock/Real flexibility**: Supports a "mock mode" for easy demonstration without needing a live RPC/wallet, while being fully functional for real on-chain analysis.
+
+### Results
+- ✅ 100% TypeScript coverage
+- ✅ Clean compilation with `npx tsc --noEmit`
+- ✅ Example script `basic-monitor.ts` demonstrating the full loop
+- ✅ Integrated with updated core SDK (fixed inconsistencies in `ParsedTransaction` and `TransactionFetcher`)
+
+### Next Steps
+1. Build Yield Scout Agent (packages/agents/yield-scout)
+2. Build Risk Monitor Agent (packages/agents/risk-monitor)
+3. Connect agents to Dashboard

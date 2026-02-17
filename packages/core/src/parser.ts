@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { SolanaInstruction } from './types';
+import { SolanaInstruction } from './types/index';
 
 export class InstructionParser {
   parse(instruction: any): string {
@@ -16,9 +16,7 @@ export class InstructionParser {
       }
     }
 
-    const programId = instruction.programId.toBase58();
+    const programId = instruction.programId.toString();
     return `Unknown instruction from program ${programId}`;
   }
 }
-
-

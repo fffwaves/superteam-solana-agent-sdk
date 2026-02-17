@@ -8,21 +8,6 @@ export interface ActivityEntry {
   project: string;
 }
 
-export interface SolanaTransaction {
-  signature: string;
-  slot: number;
-  blockTime: number;
-  instructions: SolanaInstruction[];
-  raw: any;
-}
-
-export interface SolanaInstruction {
-  programId: PublicKey;
-  data: string;
-  accounts: PublicKey[];
-  summary?: string;
-}
-
 export interface RiskProfile {
   score: number;
   factors: string[];

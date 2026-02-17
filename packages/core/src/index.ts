@@ -1,5 +1,6 @@
 // Export all types and interfaces
 export * from './types';
+export * from './types/index';
 export * from './executor/types';
 export * from './decision/types';
 export * from './risk/rug-detector';

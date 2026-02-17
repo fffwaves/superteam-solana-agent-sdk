@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
 export type SolanaTransaction = ParsedTransaction;
+export type SolanaInstruction = ParsedInstruction;
 
 /**
  * Parsed transaction result
@@ -88,15 +89,4 @@ export interface MarinadeStake {
   solAmount: string;
   msolAmount: string;
   exchangeRate: number;
-}
-
-/**
- * Token metadata
- */
-export interface TokenMetadata {
-  mint: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  logoUri?: string;
 }
