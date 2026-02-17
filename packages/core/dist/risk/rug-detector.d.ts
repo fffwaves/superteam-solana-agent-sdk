@@ -2,6 +2,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 export interface RugPullRisk {
     score: number;
     level: 'low' | 'medium' | 'high' | 'critical';
+    confidence: number;
     flags: string[];
     details: {
         concentration?: number;
@@ -16,10 +17,14 @@ export interface RugPullRisk {
  */
 export declare function detectRugPull(connection: Connection, mint: PublicKey): Promise<RugPullRisk>;
 /**
+ * Enhanced confidence scoring for rug pull detection
+ * (Helper for external use if needed)
+ */
+export declare function calculateRugConfidence(risk: RugPullRisk): {
+    confidence: number;
+    reasoning: string[];
+};
+/**
  * Check if a token is likely a rug pull based on historical patterns
  */
 export declare function isLikelyRugPull(risk: RugPullRisk): boolean;
-/**
- * Get confidence score for rug pull detection
- */
-export declare function getConfidence(risk: RugPullRisk): number;
