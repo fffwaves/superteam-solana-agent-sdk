@@ -1,0 +1,21 @@
+{
+  "name": "@solana-agent-sdk/yield-scout",
+  "version": "0.1.0",
+  "description": "Yield Scout reference agent for Solana Agent SDK — monitors APY and recommends optimal yield strategies",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "example": "ts-node src/examples/basic-scout.ts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3"
+  }
+}

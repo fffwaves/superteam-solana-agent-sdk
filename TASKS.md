@@ -1,8 +1,8 @@
 # TASKS - superteam
 
 ## In Progress
-- [ ] Yield Scout Agent (packages/agents/yield-scout)
-- [ ] Risk Monitor Agent (packages/agents/risk-monitor)
+- [x] Yield Scout Agent (packages/agents/yield-scout) ✅ Feb 18
+- [x] Risk Monitor Agent (packages/agents/risk-monitor) ✅ Feb 18
 - [ ] Dashboard (packages/dashboard — Next.js + shadcn/ui)
 - [ ] API Documentation
 - [ ] Quick-start guide

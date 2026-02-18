@@ -710,3 +710,53 @@ The agent demonstrates "agent reasoning" by:
 1. Build Yield Scout Agent (packages/agents/yield-scout)
 2. Build Risk Monitor Agent (packages/agents/risk-monitor)
 3. Connect agents to Dashboard
+
+## Entry 4: Yield Scout + Risk Monitor Agents (Feb 18, 2026)
+
+### Context
+Autonomous work session (02:00 UTC). Two remaining reference agents were priority — completing the full agent trifecta required for Tier 1 MVP.
+
+### Yield Scout Agent (`packages/agents/yield-scout`)
+
+**Architecture Decision:** Rather than building a simple APY tracker, the agent implements a full risk-adjusted yield optimization loop:
+
+1. **Protocol Scanner** (`scanner.ts`): Scans Marinade, Orca, Raydium, marginfi, Kamino. Uses protocol-specific risk profiles (audit history, TVL, IL exposure) to assign per-pool risk scores. In live mode: fetches from protocol APIs. In mock: uses realistic mainnet-based APY/TVL data.
+
+2. **Yield Recommender** (`recommender.ts`): Implements agent decision logic — compares wallet's current positions against market opportunities, generates prioritized ENTER/REBALANCE/MONITOR/EXIT recommendations. Each decision is logged with reasoning + confidence score.
+
+3. **YieldMonitor**: Wraps the agent in a continuous monitoring loop, detects significant APY shifts (≥2pp), fires callbacks on new opportunities.
+
+**Key Design Choice:** Sort by risk-adjusted APY (APY / risk score) rather than raw APY — avoids recommending dangerous 200% APY honeypots.
+
+**Example Output (mock mode):**
+- Best opportunity: mSOL Native Staking — 8.0% APY, Risk 10/100, TVL $1.25B
+- 4 recommendations generated (2 ENTER, 1 REBALANCE, 1 MONITOR)
+
+### Risk Monitor Agent (`packages/agents/risk-monitor`)
+
+**Architecture Decision:** Multi-layer threat detection combining wallet + token + protocol analysis:
+
+1. **ThreatDetector** (`threat-detector.ts`): Generates typed `ThreatSignal` objects with evidence arrays, confidence scores, false-positive risk ratings, and specific recommended actions. Covers: rug pulls, MEV sandwich attacks, phishing (suspicious token approvals), protocol exploits.
+
+2. **Protocol Health Checks**: Monitors TVL changes across 5 known protocols. Flags >8% TVL drop in 24h as medium threat, >15% as high. Uses known audit firm data for context.
+
+3. **ContinuousRiskMonitor**: Diff-based alerting — only fires callback when genuinely NEW threats appear (deduplicates by category + address).
+
+**Key Design Choice:** `autoMitigationAvailable: false` by default on all threats — the agent identifies and recommends, but never moves funds without explicit user opt-in. This aligns with the SDK's confirmation flow philosophy.
+
+### Technical Fixes
+- Repaired broken `text-encoding-utf-8` package in core's node_modules (empty lib/ dir)
+- Set up `@solana-agent-sdk/core` symlinks in both agents' node_modules for runtime resolution
+- Both agents pass `npx tsc --noEmit` (0 errors, strict=false matching portfolio-tracker config)
+
+### Results
+- ✅ Yield Scout: compiles clean, example runs end-to-end in mock mode
+- ✅ Risk Monitor: compiles clean, example runs end-to-end in mock mode  
+- ✅ All 3 reference agents now complete (Portfolio Tracker + Yield Scout + Risk Monitor)
+- ✅ TASKS.md updated
+
+### Next Steps (remaining TASKS.md items)
+1. Dashboard (packages/dashboard — Next.js + shadcn/ui)
+2. API Documentation
+3. Quick-start guide
+4. README polish (submission narrative)
