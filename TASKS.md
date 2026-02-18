@@ -1,17 +1,20 @@
 # TASKS - superteam
 
 ## In Progress
-- [x] Yield Scout Agent (packages/agents/yield-scout) ✅ Feb 18
-- [x] Risk Monitor Agent (packages/agents/risk-monitor) ✅ Feb 18
-- [ ] Dashboard (packages/dashboard — Next.js + shadcn/ui)
-- [ ] API Documentation
-- [ ] Quick-start guide
-- [ ] README (submission narrative polish)
+(None — all Tier 1 tasks complete)
 
 ## Completed
 
+### Phase 4 — Dashboard + Docs
+- [x] Dashboard (packages/dashboard — Next.js 15 + shadcn/ui) ✅ Feb 18
+- [x] API Documentation (docs/api.md) ✅ Feb 18
+- [x] Quick-start guide (docs/quickstart.md) ✅ Feb 18
+- [x] README polish (submission-ready narrative + badges) ✅ Feb 18
+
 ### Phase 3 — Reference Agents
-- [x] 9.1 Build Portfolio Tracker Agent (State reconstruction, P&L, Risk monitoring)
+- [x] Yield Scout Agent (packages/agents/yield-scout) ✅ Feb 18
+- [x] Risk Monitor Agent (packages/agents/risk-monitor) ✅ Feb 18
+- [x] Portfolio Tracker Agent (packages/agents/portfolio-tracker) ✅ Feb 17
 
 ### Phase 1 — Research + Design
 - [x] 1.x-3.x Phase 1 (Research + Design)

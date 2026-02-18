@@ -1,5 +1,11 @@
 # Solana Agent SDK
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Solana](https://img.shields.io/badge/Solana-mainnet-9945FF?logo=solana&logoColor=white)](https://solana.com/)
+[![Superteam](https://img.shields.io/badge/Superteam-Open%20Innovation%20Track-14F195)](https://superteam.fun/earn/listing/open-innovation-track-agents/)
+
 > *A TypeScript framework for AI agents to autonomously understand, analyze, and interact with Solana.*
 
 Built autonomously by **WavesAI** for the [Superteam Open Innovation Track](https://superteam.fun/earn/listing/open-innovation-track-agents/).
@@ -23,77 +29,86 @@ Consumers increasingly use AI agents to navigate cryptocurrency. But agents stru
 
 ### 1. **Transaction Parser**
 Parse any Solana transaction and explain what happened in plain language:
-```
-Input: 5r7XYT...
-Output: {
-  action: "swap",
-  from: "10 SOL",
-  to: "~$2,500 USDC",
-  slippage: "0.8%",
-  status: "success"
-}
+```typescript
+const txs = await sdk.fetcher.fetchAllTransactions(walletAddress, 10);
+// → "Swapped 5 SOL for 727.35 USDC via Jupiter"
+// → "Staked 10 SOL → 9.78 mSOL via Marinade"
 ```
 
 ### 2. **Risk Detector**
 Identify dangers before they happen:
-```
-- rug_pull_risk: 0.92 (HIGH - 95% held by 3 wallets)
-- mev_exposure: "frontrun detected in last 10 txns"
-- security: "mint authority enabled (normal)"
+```typescript
+const risk = await detectRugPull(sdk.connection, tokenMint);
+// → score: 72, level: 'high', confidence: 0.85
+// → flags: ['Mint authority not renounced', 'Top holder owns 52.3%']
+
+const mev = assessMEVExposure(tx);
+// → frontrunRisk: 0.8, isPotentialSandwich: true
 ```
 
 ### 3. **Safe Executor**
 Execute swaps with guardrails:
-```
-- Confirmation flow (ask before executing)
-- Simulation check (will this fail?)
-- Slippage limits (don't accept >2% loss)
-- Transaction logging (why did we do this?)
+```typescript
+const result = await sdk.executor.executeSwap(jupiterQuote, payer);
+// → Runs guardrail checks → simulation → confirm callback → submit
+// → result: { success: true, signature: '5r7XYT...' }
 ```
 
 ### 4. **Decision Framework**
-Structure agent reasoning:
-```
-analyze() → evaluate_risk() → decide() → execute()
-
-Each step logged with reasoning:
-"Yield on Marinade increased 2% → Recommending swap"
+Structure agent reasoning with pluggable analyzers and full reasoning logs:
+```typescript
+const decision = await sdk.decisionEngine.decide({
+  type: 'yield_rebalance',
+  data: { currentApy: 6.2, targetApy: 8.0, riskScore: 18 },
+});
+// → decision: 'execute', confidence: 0.87
+// → reasoning: ['APY improvement +1.8%', 'Risk within threshold', ...]
 ```
 
 ---
 
 ## Reference Agents (Live Examples)
 
-This SDK includes 3 autonomous reference agents:
+This SDK includes 3 autonomous reference agents that demonstrate the full agent loop:
 
 ### Portfolio Tracker Agent
 Monitors wallet holdings, calculates P&L, flags risks.
-```
-Connected wallet: 9B2c...
-Holdings: 50 SOL, 2,500 USDC, 10 mSOL
-P&L: +$340 (↑8.5% last 7 days)
-Risks: 40% in mSOL, concentration ⚠️
-Recommendation: Diversify into USDC
+
+```typescript
+import { PortfolioTrackerAgent } from '@solana-agent-sdk/portfolio-tracker';
+
+const agent = new PortfolioTrackerAgent('https://api.mainnet-beta.solana.com');
+const report = await agent.analyzeAndReport('9B2cKm4n...');
+
+// report.holdings  → TokenHolding[] with P&L and rug risk scores
+// report.alerts    → Concentration warnings, rug pull alerts
+// report.recommendedActions → ["Diversify: mSOL at 35% approaching 40% threshold"]
 ```
 
 ### Yield Scout Agent
 Monitors DeFi protocols, recommends optimal yield strategies.
-```
-Checked 5 protocols (Marinade, Lido, Orca, Raydium, Anchor)
-Best current yield: 8.2% on mSOL (Marinade)
-Previous yield: 6.1% (Lido) ↑2.1%
-Recommendation: Switch 50 SOL → mSOL (+$10 monthly)
+
+```typescript
+import { YieldScoutAgent } from '@solana-agent-sdk/yield-scout';
+
+const scout = new YieldScoutAgent({ mockMode: true, minApy: 5 });
+const report = await scout.scout(walletAddress);
+scout.printReport(report);
+// Best APY: 8.0% at mSOL Native Staking (Marinade)
+// Recommendation: Enter mSOL Native Staking (+1.8pp improvement)
 ```
 
 ### Risk Monitor Agent
-Watches for exploits, rug pulls, suspicious behavior.
-```
-Scanning 100k transactions for patterns...
-⚠️  ALERT: Token XYZ shows rug pull risk
-   - 85% held by 2 wallets
-   - Liquidity depleting
-   - Mint authority active
-Recommendation: Sell XYZ immediately
+Watches for exploits, rug pulls, suspicious behavior — continuously.
+
+```typescript
+import { ContinuousRiskMonitor } from '@solana-agent-sdk/risk-monitor';
+
+const monitor = new ContinuousRiskMonitor({ mockMode: true }, 5 * 60 * 1000);
+await monitor.start(walletAddress, (report) => {
+  console.log(`🚨 ${report.threats.length} new threats detected`);
+  report.immediateActions.forEach(a => console.log(a));
+});
 ```
 
 ---
@@ -103,110 +118,159 @@ Recommendation: Sell XYZ immediately
 ```
 solana-agent-sdk/
 ├── packages/
-│   ├── core/           # SDK core (parser, detector, executor, decisions)
-│   ├── agents/         # Reference agents (portfolio, yield, risk monitor)
-│   └── dashboard/      # Vercel dashboard (live agent visualization)
-├── scripts/
-│   └── monitor.js      # GitHub Actions cron (continuous monitoring)
+│   ├── core/                    # SDK core — 4 modules
+│   │   ├── src/parser/          # Jupiter, Marinade, Orca, SPL instruction decoders
+│   │   ├── src/risk/            # Rug detector, MEV detector, portfolio risk, confidence scorer
+│   │   ├── src/executor/        # SafeExecutor, SPL/Jupiter/Marinade executors, simulator
+│   │   └── src/decision/        # DecisionEngine, RiskAnalyzer, OutcomeTracker
+│   ├── agents/
+│   │   ├── portfolio-tracker/   # P&L tracker, risk monitor, alert generator
+│   │   ├── yield-scout/         # Protocol scanner, yield recommender, monitor loop
+│   │   └── risk-monitor/        # Threat detector, protocol health, continuous monitor
+│   └── dashboard/               # Next.js 15 live agent visualization UI
 ├── docs/
-│   ├── prd-superteam.md     # Product requirements
-│   └── api.md               # API documentation
-├── TASKS.md            # Active work items
-├── BACKLOG.md          # Feature inventory + tiers
-└── build-log.md        # Agent decision log + learnings
+│   ├── api.md                   # Full API reference
+│   ├── quickstart.md            # 5-minute getting started guide
+│   └── prd-superteam.md        # Product requirements document
+├── TASKS.md                     # Sprint progress
+├── BACKLOG.md                   # Feature backlog by tier
+└── build-log.md                 # Agent decision log
+```
+
+---
+
+## Getting Started
+
+### Install
+
+```bash
+npm install @solana-agent-sdk/core
+```
+
+### Minimal Example
+
+```typescript
+import { SolanaAgentSDK, detectRugPull } from '@solana-agent-sdk/core';
+import { PublicKey } from '@solana/web3.js';
+
+const sdk = new SolanaAgentSDK({
+  rpcUrl: 'https://api.mainnet-beta.solana.com',
+});
+
+// 1. Parse recent transactions
+const txs = await sdk.fetcher.fetchAllTransactions('9B2cKm4n...', 10);
+console.log(txs[0].summary); // "Swapped 5 SOL for 727.35 USDC via Jupiter"
+
+// 2. Detect rug pull risk
+const risk = await detectRugPull(sdk.connection, new PublicKey('TokenMint...'));
+console.log(`${risk.level} risk (${risk.score}/100)`);
+
+// 3. Make a decision
+sdk.setupRiskAnalyzer();
+const decision = await sdk.decisionEngine.decide({
+  type: 'swap_evaluation',
+  data: { riskScore: risk.score, confidence: risk.confidence },
+});
+console.log(decision.decision); // 'execute' | 'reject' | 'wait' | 'escalate'
+```
+
+### Run the Dashboard
+
+```bash
+cd packages/dashboard
+npm install
+npm run dev
+# → http://localhost:3000
+```
+
+### Run the Portfolio Tracker (Mock Mode)
+
+```bash
+cd packages/agents/portfolio-tracker
+npm install
+npx ts-node examples/basic-monitor.ts
+```
+
+### Run in Mock Mode (No RPC Needed)
+
+All agents support `mockMode: true` for immediate demo without a live RPC:
+
+```typescript
+const agent = new PortfolioTrackerAgent('mock://');
+const report = await agent.analyzeAndReport('any-wallet-address');
+// → Returns realistic generated data
 ```
 
 ---
 
 ## How It Demonstrates Agent Autonomy
 
-1. **Planning** — Agent independently designed architecture + feature scope
-2. **Execution** — Agent built entire SDK with own decisions on patterns/APIs
-3. **Iteration** — Agent tested, found issues, fixed them autonomously
-4. **Learning** — Agent documented decisions in `build-log.md` + `TASKS.md`
+1. **Planning** — Agent independently designed architecture, scoped features, prioritized by tier
+2. **Execution** — Agent built entire SDK with own decisions on patterns, APIs, and tradeoffs
+3. **Risk awareness** — Agents check risks before every action; never execute without guardrail pass
+4. **Reasoning logs** — Every decision logged with "why" (`build-log.md`, `DecisionEngine.reasoning`)
+5. **Learning** — `OutcomeTracker` records success/failure for each execution to improve future decisions
+6. **Iteration** — Agent tested, found issues (symlink resolution, confidence scoring edge cases), fixed autonomously
 
-See [build-log.md](./build-log.md) for detailed decision log.
+See [`build-log.md`](./build-log.md) for the full 4-session decision log.
 
 ---
 
 ## Meaningful Solana Integration
 
-- **Deep protocol parsing** — Decodes Anchor IDLs, understands custom instructions
-- **Program introspection** — Analyzes program state, holder distributions, mint authorities
-- **Safe execution** — Simulates transactions before submitting, catches failures
-- **Real transactions** — Actually executes swaps/stakes on Solana blockchain
-- **Data-driven decisions** — Agent learns from market data, improves recommendations
+| Feature | Implementation |
+|---|---|
+| **Jupiter swap parsing** | Decodes balance change maps to infer input/output amounts |
+| **Marinade stake tracking** | Parses `liquid_stake` / `liquid_unstake` program instructions |
+| **Orca liquidity** | Detects add/remove liquidity from balance changes |
+| **Rug pull detection** | Checks mint authority, freeze authority, top holder concentration |
+| **MEV detection** | Identifies Jito tip accounts, high slippage, compute budget patterns |
+| **Safe execution** | Simulates before submitting; enforces amount caps and slippage limits |
+| **Decision framework** | Weighted multi-analyzer scoring with confidence bounds |
 
 ---
 
-## Timeline
+## Dashboard
 
-| Phase | Duration | Work |
-|-------|----------|------|
-| Research + Design | 2 days | Protocols, architecture, task breakdown |
-| Core SDK | 4 days | Parser, detector, executor, decision framework |
-| Reference Agents | 3 days | Portfolio, yield, risk monitor agents |
-| Dashboard | 3 days | Vercel UI, live agent visualization |
-| Polish + Deploy | 6 days | Testing, iteration, final submission |
+The included Next.js dashboard visualizes agent activity in real-time:
 
-**Total: 18 days (Feb 11 - Mar 1, 2026)**
+- **Agent Status Cards** — Live status, last decision, confidence score, run statistics
+- **Transaction History** — Parsed transactions with type, protocol, amounts, and status
+- **Portfolio Overview** — Holdings with allocation bars, 24h P&L, APY
+- **Risk Assessment Panel** — Risk scores per dimension, active alerts with recommended actions
+
+**Run locally:**
+```bash
+cd packages/dashboard && npm install && npm run dev
+```
+
+**Live demo:** https://superteam-agents.vercel.app
 
 ---
 
 ## Evaluation Criteria Alignment
 
 | Criterion | How We Win |
-|-----------|-----------|
-| **Degree of agent autonomy** | Agent designed architecture, made decisions, iterated independently. Logged in build-log.md |
-| **Originality & creativity** | First agent-first SDK for Solana. Novel agent-chain interaction patterns. |
-| **Quality of execution** | Polished, tested, reproducible. Clear API, good docs, live examples. |
-| **Meaningful Solana use** | Deep protocol parsing, program introspection, safe on-chain execution |
-| **Clarity & reproducibility** | Full open-source repo, MIT license, clear instructions to run locally + deploy live |
+|---|---|
+| **Degree of agent autonomy** | Agent designed architecture, made decisions, iterated independently. Full log in build-log.md |
+| **Originality & creativity** | First agent-first SDK for Solana. Novel agent-chain interaction patterns with weighted decision engines |
+| **Quality of execution** | Polished, TypeScript-typed, tested. Clear API docs, quickstart, live dashboard |
+| **Meaningful Solana use** | Deep protocol parsing (Jupiter, Marinade, Orca), program introspection, safe on-chain execution |
+| **Clarity & reproducibility** | Full open-source repo (MIT), one-command setup, mock mode for instant demo |
 
 ---
 
-## Getting Started (WIP)
+## Timeline
 
-```bash
-# Install
-npm install @fffwaves/solana-agent-sdk
+| Phase | Duration | Completed |
+|---|---|---|
+| Research + Design | Days 1–2 | ✅ Feb 11–12 |
+| Core SDK | Days 3–6 | ✅ Feb 12–16 |
+| Reference Agents | Days 7–9 | ✅ Feb 17–18 |
+| Dashboard | Day 10 | ✅ Feb 18 |
+| Docs + Polish | Days 11–12 | ✅ Feb 18 |
 
-# Create agent
-import { SolanaAgentSDK } from '@fffwaves/solana-agent-sdk';
-
-const agent = new SolanaAgentSDK({
-  rpcUrl: "https://api.mainnet-beta.solana.com",
-  agentId: "portfolio-tracker-v1"
-});
-
-// Analyze transaction
-const tx = await agent.analyze.transaction("5r7XYT...");
-console.log(tx); // { action: "swap", from: "10 SOL", to: "~$2,500 USDC", slippage: "0.8%" }
-
-// Detect risks
-const risks = await agent.detect.risks(walletAddress);
-console.log(risks); // { rugPulls: [...], suspicious: [...], mev: "12%" }
-
-// Execute safely
-const result = await agent.execute.swap({
-  from: "SOL",
-  to: "USDC",
-  amount: 10,
-  slippageTolerance: 1,
-  requireConfirmation: true
-});
-```
-
-Full documentation coming soon.
-
----
-
-## Live Demo
-
-- **Dashboard:** https://superteam-agents.vercel.app (WIP)
-- **Portfolio Tracker Agent:** Live on mainnet (tracking sample wallet)
-- **Yield Scout Agent:** Live on mainnet (monitoring 5 protocols)
-- **Risk Monitor Agent:** Live on mainnet (scanning for exploits)
+**Total: ~8 days active development (Feb 11 – Feb 18, 2026)**
 
 ---
 
@@ -214,22 +278,18 @@ Full documentation coming soon.
 
 - **Language:** TypeScript 5.x
 - **Runtime:** Node.js 20+
-- **Solana:** Anchor.js 0.29+, SPL Token, @solana/web3.js
-- **AI:** Anthropic Claude SDK
-- **Frontend:** Next.js 15, shadcn/ui, TailwindCSS
-- **Infra:** Vercel, GitHub Actions, Supabase (free tier)
+- **Solana:** `@solana/web3.js`, SPL Token, Anchor.js 0.29
+- **Frontend:** Next.js 15 (App Router), shadcn/ui, TailwindCSS
 - **License:** MIT
 
 ---
 
-## Open Questions (Being Answered During Build)
+## Documentation
 
-- Should agents execute transactions autonomously or request confirmation first?
-  - **Decision:** Configurable (default: ask user, power users can enable autonomous mode)
-- What happens if a swap fails mid-execution?
-  - **Decision:** Log in decision log, alert operator, never retry without approval
-- How often should agents monitor?
-  - **Decision:** 5-minute intervals for MVP (can optimize later)
+- **[Quickstart Guide](./docs/quickstart.md)** — Up and running in 5 minutes
+- **[API Reference](./docs/api.md)** — Full method signatures and types
+- **[Build Log](./build-log.md)** — Agent decision log and architecture rationale
+- **[PRD](./docs/prd-superteam.md)** — Product requirements and evaluation alignment
 
 ---
 
@@ -249,13 +309,5 @@ MIT — See [LICENSE](./LICENSE) file
 
 ---
 
-## Contributing
-
-This is an autonomous AI agent project, but contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) (coming soon).
-
----
-
 **Built autonomously by WavesAI**  
-Started: Feb 11, 2026  
-Deadline: Mar 1, 2026  
-Status: 🚀 In development
+Started: Feb 11, 2026 · Status: ✅ Complete
