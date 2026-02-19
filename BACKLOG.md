@@ -55,7 +55,7 @@
 - [x] 🟡 **Phantom MCP Agent** — Reference agent using `@phantom/mcp-server` as signing layer. Agent decides → Safe Executor quotes + simulates → Phantom MCP signs → tx submitted. Removes key management from the SDK; delegates to Phantom embedded wallet via OAuth (Google/Apple). Tools: `get_wallet_addresses`, `sign_transaction`, `transfer_tokens`, `buy_token`, `sign_message`. Multi-chain: Solana, ETH, BTC, Sui. Prerequisites: App ID from Phantom Portal + localhost:8080/callback redirect URL. Note: currently preview — use a dedicated test wallet, never mainnet assets.
 
 ### Dashboard Enhancements
-- [ ] 🟡 Performance chart (P&L over time, decision accuracy)
+- [x] 🟡 **Performance chart** (P&L over time, decision accuracy) ✅ Feb 19
 - [ ] 🟡 Alert management (configure, mute, track)
 - [ ] 🟡 Settings UI (thresholds, confirmation preferences)
 - [ ] 🟡 Agent comparison (Portfolio vs. Yield Scout vs. Risk Monitor)
