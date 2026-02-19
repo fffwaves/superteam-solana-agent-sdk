@@ -71,6 +71,26 @@ export interface RiskScore {
   liquidity: number;
 }
 
+export interface PerformancePoint {
+  day: number; // days ago (0 = today)
+  date: string; // "Feb 19" format
+  portfolioValue: number; // total USD
+  pnlPercent: number; // cumulative P&L %
+  decisions: number; // decisions made that day
+  successRate: number; // 0-100
+}
+
+export interface AgentPerformance {
+  agentId: string;
+  agentName: string;
+  color: string;
+  totalPnlPercent: number;
+  winRate: number; // 0-100
+  totalDecisions: number;
+  avgConfidence: number; // 0-100
+  history: { day: number; date: string; pnl: number; decisions: number; accuracy: number }[];
+}
+
 // ---------------------------------------------------------------------------
 // TRANSACTIONS (12 realistic ones)
 // ---------------------------------------------------------------------------
@@ -396,6 +416,103 @@ export const RISK_SCORE: RiskScore = {
   protocol: 15,
   liquidity: 18,
 };
+
+// ---------------------------------------------------------------------------
+// PERFORMANCE DATA (30-day history)
+// ---------------------------------------------------------------------------
+
+function makeDate(daysAgo: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+// Portfolio value over 30 days — starts at $8,400, grows to ~$9,850
+export const PORTFOLIO_HISTORY: PerformancePoint[] = Array.from({ length: 30 }, (_, i) => {
+  const day = 29 - i;
+  // Simulate realistic portfolio growth with some volatility
+  const base = 8400;
+  const trend = (29 - day) * 48; // ~$48/day avg growth
+  const noise = Math.sin(day * 1.7) * 180 + Math.cos(day * 0.9) * 120;
+  const portfolioValue = Math.round(base + trend + noise);
+  const startVal = 8400;
+  const pnlPercent = parseFloat((((portfolioValue - startVal) / startVal) * 100).toFixed(2));
+  return {
+    day,
+    date: makeDate(day),
+    portfolioValue,
+    pnlPercent,
+    decisions: Math.round(8 + Math.sin(day * 1.1) * 4),
+    successRate: Math.round(82 + Math.sin(day * 0.7) * 8),
+  };
+});
+
+// Per-agent performance history
+export const AGENT_PERFORMANCE: AgentPerformance[] = [
+  {
+    agentId: "portfolio-tracker",
+    agentName: "Portfolio Tracker",
+    color: "#9945FF",
+    totalPnlPercent: 17.3,
+    winRate: 84,
+    totalDecisions: 247,
+    avgConfidence: 88,
+    history: Array.from({ length: 30 }, (_, i) => {
+      const day = 29 - i;
+      const base = (29 - day) * 0.58;
+      const noise = Math.sin(day * 1.3) * 1.2;
+      return {
+        day,
+        date: makeDate(day),
+        pnl: parseFloat((base + noise).toFixed(2)),
+        decisions: Math.round(9 + Math.sin(day * 1.1) * 3),
+        accuracy: Math.round(84 + Math.sin(day * 0.8) * 6),
+      };
+    }),
+  },
+  {
+    agentId: "yield-scout",
+    agentName: "Yield Scout",
+    color: "#14F195",
+    totalPnlPercent: 11.8,
+    winRate: 79,
+    totalDecisions: 183,
+    avgConfidence: 82,
+    history: Array.from({ length: 30 }, (_, i) => {
+      const day = 29 - i;
+      const base = (29 - day) * 0.39;
+      const noise = Math.cos(day * 1.1) * 0.9;
+      return {
+        day,
+        date: makeDate(day),
+        pnl: parseFloat((base + noise).toFixed(2)),
+        decisions: Math.round(6 + Math.cos(day * 0.9) * 2),
+        accuracy: Math.round(79 + Math.cos(day * 0.7) * 7),
+      };
+    }),
+  },
+  {
+    agentId: "risk-monitor",
+    agentName: "Risk Monitor",
+    color: "#F59E0B",
+    totalPnlPercent: 8.4,
+    winRate: 91,
+    totalDecisions: 421,
+    avgConfidence: 94,
+    history: Array.from({ length: 30 }, (_, i) => {
+      const day = 29 - i;
+      const base = (29 - day) * 0.28;
+      const noise = Math.sin(day * 2.1) * 0.6;
+      return {
+        day,
+        date: makeDate(day),
+        pnl: parseFloat((base + noise).toFixed(2)),
+        decisions: Math.round(14 + Math.sin(day * 1.4) * 4),
+        accuracy: Math.round(91 + Math.sin(day * 0.5) * 4),
+      };
+    }),
+  },
+];
 
 // ---------------------------------------------------------------------------
 // HELPERS

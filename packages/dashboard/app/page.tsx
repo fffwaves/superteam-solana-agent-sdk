@@ -3,6 +3,7 @@ import { AgentStatusCard } from "@/components/AgentStatusCard";
 import { TransactionHistory } from "@/components/TransactionHistory";
 import { RiskAssessmentPanel } from "@/components/RiskAssessmentPanel";
 import { PortfolioOverview } from "@/components/PortfolioOverview";
+import { PerformanceChart } from "@/components/PerformanceChart";
 import { AGENTS } from "@/lib/mock-data";
 import { Activity, BookOpen, Code2 } from "lucide-react";
 
@@ -88,6 +89,9 @@ export default function DashboardPage() {
             <PortfolioOverview />
           </div>
         </div>
+
+        {/* Performance chart full-width */}
+        <PerformanceChart />
 
         {/* Risk assessment full-width */}
         <RiskAssessmentPanel />
