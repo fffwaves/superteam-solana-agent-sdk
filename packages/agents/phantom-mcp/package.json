@@ -1,0 +1,23 @@
+{
+  "name": "@solana-agent-sdk/phantom-mcp",
+  "version": "0.1.0",
+  "description": "Phantom MCP Agent — reference agent using @phantom/mcp-server as signing layer. No private key management; delegates to Phantom embedded wallet via OAuth.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "example": "ts-node src/examples/basic-swap.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.4",
+    "@solana-agent-sdk/core": "file:../../core"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3"
+  }
+}

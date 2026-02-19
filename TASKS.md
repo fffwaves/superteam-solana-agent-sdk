@@ -15,6 +15,7 @@
 - [x] Yield Scout Agent (packages/agents/yield-scout) ✅ Feb 18
 - [x] Risk Monitor Agent (packages/agents/risk-monitor) ✅ Feb 18
 - [x] Portfolio Tracker Agent (packages/agents/portfolio-tracker) ✅ Feb 17
+- [x] Phantom MCP Agent (packages/agents/phantom-mcp) ✅ Feb 19 🟡 Tier 2
 
 ### Phase 1 — Research + Design
 - [x] 1.x-3.x Phase 1 (Research + Design)
