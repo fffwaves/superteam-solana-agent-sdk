@@ -5,6 +5,7 @@ import { RiskAssessmentPanel } from "@/components/RiskAssessmentPanel";
 import { PortfolioOverview } from "@/components/PortfolioOverview";
 import { PerformanceChart } from "@/components/PerformanceChart";
 import { AlertManagement } from "@/components/AlertManagement";
+import { SettingsPanel } from "@/components/SettingsPanel";
 import { AGENTS } from "@/lib/mock-data";
 import { Activity, BookOpen, Code2 } from "lucide-react";
 
@@ -99,6 +100,9 @@ export default function DashboardPage() {
           <AlertManagement />
           <RiskAssessmentPanel />
         </div>
+
+        {/* Settings panel — full width */}
+        <SettingsPanel />
 
         {/* Footer */}
         <footer className="border-t border-solana-border pt-4 pb-6 text-center">
