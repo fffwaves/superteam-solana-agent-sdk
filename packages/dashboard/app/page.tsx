@@ -4,6 +4,7 @@ import { TransactionHistory } from "@/components/TransactionHistory";
 import { RiskAssessmentPanel } from "@/components/RiskAssessmentPanel";
 import { PortfolioOverview } from "@/components/PortfolioOverview";
 import { PerformanceChart } from "@/components/PerformanceChart";
+import { AlertManagement } from "@/components/AlertManagement";
 import { AGENTS } from "@/lib/mock-data";
 import { Activity, BookOpen, Code2 } from "lucide-react";
 
@@ -93,8 +94,11 @@ export default function DashboardPage() {
         {/* Performance chart full-width */}
         <PerformanceChart />
 
-        {/* Risk assessment full-width */}
-        <RiskAssessmentPanel />
+        {/* Alert management + Risk assessment side by side on large screens */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <AlertManagement />
+          <RiskAssessmentPanel />
+        </div>
 
         {/* Footer */}
         <footer className="border-t border-solana-border pt-4 pb-6 text-center">
