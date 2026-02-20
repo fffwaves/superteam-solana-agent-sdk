@@ -57,7 +57,7 @@
 ### Dashboard Enhancements
 - [x] 🟡 **Performance chart** (P&L over time, decision accuracy) ✅ Feb 19
 - [x] 🟡 **Alert management** (configure, mute, track) ✅ Feb 20
-- [ ] 🟡 Settings UI (thresholds, confirmation preferences)
+- [x] 🟡 **Settings UI** — thresholds, confirmation preferences panel in dashboard ✅ Feb 20
 - [ ] 🟡 Agent comparison (Portfolio vs. Yield Scout vs. Risk Monitor)
 
 ### Infrastructure
