@@ -452,3 +452,20 @@ Proposal sent to Telegram. Awaiting user direction. 4h auto-build window applies
 2. **🟡 Autonomous Rebalancing** — `rebalance()` in Safe Executor. High complexity, most technically impressive.
 3. **🟡 Agent Comparison** — side-by-side metrics across 3 agents.
 4. **🟡 npm publish** — blocked (needs npm token).
+
+---
+
+## Session: Feb 21, 2026 — 02:01 UTC (Autonomous work)
+
+**Status:** All Tier 1 complete. TASKS.md empty. Outside active hours (02:01 UTC — overnight, outside 8am–5pm and 8pm–10pm windows). No auto-build this session.
+
+**Last shipped:** Settings Panel (`edcdb14`, Feb 20 23:01 UTC) — previous session
+
+**Tier 2 open items (ranked):**
+
+1. **🟡 Custom Analyzer Framework** — extensibility layer in core SDK. Allows community to plug in custom analyzers via a `registerAnalyzer()` API. ~200 lines in `packages/sdk/src/analyzers/`, docs update. Ecosystem signal for judges — shows the SDK is designed for extensibility, not just internal use. No new dependencies. **Next auto-build candidate.**
+2. **🟡 Autonomous Rebalancing** — `rebalance()` method in Safe Executor: takes target allocation → computes drift → executes swaps. Highest technical complexity, most impressive for judges. Requires Jupiter integration already in place.
+3. **🟡 Agent Comparison** — dashboard page comparing Portfolio vs. Yield Scout vs. Risk Monitor side-by-side (scan frequency, decision count, P&L, risk score). Pure UI, no SDK changes.
+4. **🟡 npm publish** — still blocked (needs `npm adduser` / token from user).
+
+**Plan:** Auto-build Custom Analyzer Framework at next active-hours session (8am UTC Sat Feb 21) if no instructions received.
